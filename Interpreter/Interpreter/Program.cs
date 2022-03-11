@@ -1,12 +1,9 @@
-﻿using System; // for code
+using System; // for code
 using System.IO; // for directories
 using System.ComponentModel; // for win32exception (yes, really)
 using System.Diagnostics; // for executables
 
 /*Notes:
-
- * add "open" function - Line 286.
- * improve "controlarg" - memory optimization (catalyst for memory optimization across the program)
  
  */
 
@@ -14,6 +11,7 @@ namespace Interpreter
 {
     class Program
     {
+        public event ConsoleCancelEventHandler CancelActionKeyPressed; //somehow this line makes it so you can close the console in an emergency
         struct Data
         {
             public bool exit;
@@ -113,9 +111,19 @@ namespace Interpreter
                         Console.WriteLine("{0}:Error - No .txt file given to read", dir);
                     }
                 ReadTxt:
-                    string text = File.ReadAllText(filename);
-                    Console.WriteLine("\n\t\t------------------------ {0} ------------------------\n", readFileName);
-                    Console.WriteLine(text + "\n");
+                    try
+                    {
+                        string text = File.ReadAllText(filename);
+                        Console.WriteLine("\n\t\t------------------------ {0} ------------------------\n", readFileName);
+                        Console.WriteLine(text + "\n");
+                        _ = text;
+                    }
+                    catch(IOException e)
+                    {
+                        Console.WriteLine("{0}:{1}", dir, e.Message);
+                    }
+                    _ = filename;
+                    _ = readFileName;
                     break;
                 case "run":
                     string fileName = @"";
@@ -411,7 +419,7 @@ namespace Interpreter
                                     }
                                 }
                             }
-                            else if(input[i + 2] == 'D')
+                            else if(input[i + 2] == 'd')
                             {
                                 try
                                 {
@@ -427,7 +435,7 @@ namespace Interpreter
                                     Console.WriteLine("{0}:{1}", dir, e.Message);
                                 }
                             }
-                            else if(input[i + 2] == 'F')
+                            else if(input[i + 2] == 'f')
                             {
                                 try
                                 {
@@ -802,7 +810,7 @@ namespace Interpreter
 
 
                 case "help":
-                    Console.WriteLine("---------------------------------------------------------------------------------------------------\ncontrol\ncontrolarg (-n number of times)\ncustomize (-f / -b)\nfld (-f, ::)\nfld::\nlist (-s -e / -D / -A, \"t\")\nexit\n---------------------------------------------------------------------------------------------------");
+                    Console.WriteLine("---------------------------------------------------------------------------------------------------\ncontrol\ncontrolarg (-n number of times)\ncustomize (-f / -b)\nfld (-f)\nfld::\nlist (-s -e / -d / -f, \"t\")\nrun (-f)\n read(-f)\nexit\n---------------------------------------------------------------------------------------------------");
                     _ = input;
                     _ = command;
                     break;
