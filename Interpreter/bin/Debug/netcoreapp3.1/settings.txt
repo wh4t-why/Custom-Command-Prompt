@@ -1,0 +1,6 @@
+gray // this is the default foreground color for the console
+black // this is the default  background color for the console
+3 //number of meooyans
+5 //fm frequency
+true // whether to warn the user if the file is large
+3000000 // max file size for read without warnings
